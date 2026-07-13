@@ -52,7 +52,7 @@ export function precessFromJ2000(raDeg, decDeg, jd) {
     Math.cos(thr) * Math.sin(dec0);
 
   const ra = norm360((Math.atan2(A, B) + zzr) * RAD);
-  const dec = Math.asin(C) * RAD;
+  const dec = Math.asin(Math.max(-1, Math.min(1, C))) * RAD;
   return { ra, dec };
 }
 
@@ -77,7 +77,7 @@ export function equatorialToHorizontal(raDeg, decDeg, latDeg, lonEastDeg, date) 
   const xn = sinDec * cosPhi - cosDec * cosH * sinPhi;
   const xu = sinDec * sinPhi + cosDec * cosH * cosPhi;
 
-  const alt = Math.asin(xu) * RAD;
+  const alt = Math.asin(Math.max(-1, Math.min(1, xu))) * RAD;
   const az = norm360(Math.atan2(xe, xn) * RAD); // from North, increasing East
   return { alt, az };
 }

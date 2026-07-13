@@ -1,6 +1,7 @@
 // tests — node --test. Asserts src/solar.js sunMoonPlanets() matches astropy
-// refs-solar.json alt/az within 0.5 deg (az wraparound aware), Moon illuminated
-// fraction in [0,1], and constellation line GeoJSON loads (>=80 features).
+// refs-solar.json alt/az within 0.05 deg (az wraparound aware, measured worst
+// dAz ≈0.036°), Moon illuminated fraction in [0,1], and constellation line
+// GeoJSON loads (>=80 features).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -13,18 +14,18 @@ const refs = JSON.parse(readFileSync(here('./refs-solar.json'), 'utf8'));
 // smallest signed angular difference in degrees (handles 359/0 wraparound)
 const angDiff = (a, b) => Math.abs(((a - b + 180) % 360 + 360) % 360 - 180);
 
-test('sunMoonPlanets reproduces astropy refs-solar within 0.5 deg', () => {
+test('sunMoonPlanets reproduces astropy refs-solar within 0.05 deg', () => {
   assert.ok(refs.length > 0, 'refs-solar.json has entries');
   for (const r of refs) {
     const bodies = sunMoonPlanets(new Date(r.utc), r.lat, r.lon);
     const b = bodies.find((x) => x.name.toLowerCase() === r.body.toLowerCase());
     assert.ok(b, `body ${r.body} present in sunMoonPlanets output`);
     assert.ok(
-      angDiff(b.alt, r.alt_expected) <= 0.5,
+      angDiff(b.alt, r.alt_expected) <= 0.05,
       `${r.body}@${r.site} ${r.utc} alt ${b.alt.toFixed(4)} vs ${r.alt_expected} (Δ${angDiff(b.alt, r.alt_expected).toFixed(4)})`
     );
     assert.ok(
-      angDiff(b.az, r.az_expected) <= 0.5,
+      angDiff(b.az, r.az_expected) <= 0.05,
       `${r.body}@${r.site} ${r.utc} az ${b.az.toFixed(4)} vs ${r.az_expected} (Δ${angDiff(b.az, r.az_expected).toFixed(4)})`
     );
   }
