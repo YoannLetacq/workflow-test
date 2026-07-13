@@ -1,0 +1,30 @@
+{
+  "ticks": 9,
+  "span": [
+    56,
+    179
+  ],
+  "omc_completed_1": 56,
+  "omc_completed_2": 102,
+  "omc_completed_3": null,
+  "final_omc_tasks": {
+    "total": 3,
+    "pending": 0,
+    "blocked": 0,
+    "in_progress": 1,
+    "completed": 2,
+    "failed": 0
+  },
+  "peak_tokens_pane": {
+    "0": 0,
+    "1": 38048,
+    "2": 29615,
+    "3": 30991
+  },
+  "worker_token_sum": 98654,
+  "marker_elapsed_s": {
+    ".done-theme": 44,
+    ".done-docs": 74,
+    ".done-engine": 164
+  }
+}

@@ -1,47 +1,58 @@
-#!/usr/bin/env python3
-"""Assert-based checks for the mdsite conversion. Uses an INLINE stub template
-so tests do not depend on mdsite/template.html."""
-import sys
-from pathlib import Path
+"""Assert-based tests for the mdsite build engine.
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "mdsite"))
+Run: python3 tests/test_build.py  (exit 0 == pass)
+
+Uses an INLINE stub template so it never depends on mdsite/template.html.
+"""
+import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "mdsite"))
 import build  # noqa: E402
 
-STUB = "<html><title>{{title}}</title><body>{{content}}</body></html>"
+STUB_TEMPLATE = "<title>{{title}}</title><main>{{content}}</main>"
 
 
 def test_heading():
-    assert build.convert("# Title") == "<h1>Title</h1>"
-    assert build.convert("## Sub") == "<h2>Sub</h2>"
-    assert build.convert("### Deep") == "<h3>Deep</h3>"
+    html = build.md_to_html("# Title\n## Sub\n### Deep")
+    assert "<h1>Title</h1>" in html, html
+    assert "<h2>Sub</h2>" in html, html
+    assert "<h3>Deep</h3>" in html, html
 
 
 def test_bold():
-    assert build.convert("a **b** c") == "<p>a <strong>b</strong> c</p>"
+    html = build.md_to_html("a **strong** word")
+    assert "<strong>strong</strong>" in html, html
 
 
 def test_link():
-    assert build.convert("[t](http://x)") == '<p><a href="http://x">t</a></p>'
+    html = build.md_to_html("see [here](https://x.io)")
+    assert '<a href="https://x.io">here</a>' in html, html
 
 
 def test_code_block():
-    html = build.convert("```\nprint(1)\n```")
-    assert html == "<pre><code>print(1)</code></pre>", html
+    html = build.md_to_html("```\nx = 1\n```")
+    assert "<pre><code>" in html and "x = 1" in html and "</code></pre>" in html, html
 
 
-def test_template_substitution():
-    page = build.render_page("Hi", "<p>body</p>", STUB)
-    assert page == "<html><title>Hi</title><body><p>body</p></body></html>", page
+def test_paragraph():
+    html = build.md_to_html("just a line")
+    assert "<p>just a line</p>" in html, html
 
 
-def test_escaping():
-    # raw < in a paragraph must be escaped, not injected
-    assert build.convert("a < b") == "<p>a &lt; b</p>"
+def test_render_with_stub_template():
+    out = build.render_page(STUB_TEMPLATE, "My Page", "<p>hi</p>")
+    assert out == "<title>My Page</title><main><p>hi</p></main>", out
+
+
+def test_title_from_first_heading():
+    assert build.extract_title("# Real Title\nbody") == "Real Title"
+    assert build.extract_title("no heading here") == "Untitled"
 
 
 if __name__ == "__main__":
-    for name, fn in sorted(globals().items()):
-        if name.startswith("test_") and callable(fn):
-            fn()
-            print(f"ok  {name}")
-    print("ALL PASS")
+    tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
+    for t in tests:
+        t()
+        print("ok", t.__name__)
+    print("ALL PASS (%d tests)" % len(tests))

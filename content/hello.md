@@ -1,11 +1,18 @@
 # Hello World
 
-This is a **sample** page for the [mdsite](https://example.com) build engine.
+This is a **sample** page for the mdsite static-site generator.
 
-## Features
+It exercises every supported Markdown feature so the [build engine](https://example.com/mdsite) has something real to convert.
 
-Supports headings, bold text, links and code blocks.
+## Formatting
+
+Inline **bold** works, and so do [links](https://example.com).
+
+### Code
 
 ```
-print("hello from mdsite")
+def greet(name):
+    return "hello, " + name
 ```
+
+That is the whole subset.
