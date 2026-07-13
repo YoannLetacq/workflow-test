@@ -1,5 +1,6 @@
 // tests — node --test. Asserts equatorialToHorizontal matches astropy refs.json
-// within 0.1 deg, plus Polaris-alt≈latitude sanity and star catalog load.
+// within 0.02 deg (measured worst ≈0.0085°), plus Polaris-alt≈latitude sanity
+// and star catalog load.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -15,16 +16,16 @@ const angDiff = (a, b) => {
   return Math.abs(d);
 };
 
-test('equatorialToHorizontal reproduces astropy refs within 0.1 deg', () => {
+test('equatorialToHorizontal reproduces astropy refs within 0.02 deg', () => {
   assert.ok(refs.length > 0, 'refs.json has entries');
   for (const r of refs) {
     const { alt, az } = equatorialToHorizontal(r.ra, r.dec, r.lat, r.lon, new Date(r.utc));
     assert.ok(
-      angDiff(alt, r.alt_expected) <= 0.1,
+      angDiff(alt, r.alt_expected) <= 0.02,
       `${r.star}@${r.site} alt ${alt.toFixed(4)} vs ${r.alt_expected} (Δ${angDiff(alt, r.alt_expected).toFixed(4)})`
     );
     assert.ok(
-      angDiff(az, r.az_expected) <= 0.1,
+      angDiff(az, r.az_expected) <= 0.02,
       `${r.star}@${r.site} az ${az.toFixed(4)} vs ${r.az_expected} (Δ${angDiff(az, r.az_expected).toFixed(4)})`
     );
   }

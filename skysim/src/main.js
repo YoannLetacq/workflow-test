@@ -14,7 +14,7 @@
 //   solar.js         sunMoonPlanets(date, lat, lonEast) -> [{name,alt,az,mag,phase?}]  (pure)
 //   solarRender.js   makeSolar(scene, getObs) -> { update, ... }
 //   constellations.js makeConstellations(scene, getObs) -> { update, setVisible, ... }
-//   atmosphere.js    makeAtmosphere(scene, getSunAltDeg) -> { update, ... }
+//   atmosphere.js    makeAtmosphere(scene, getSun) -> { mesh, update, starVisibility }
 //   ground.js        makeGround(scene) -> { ... }
 import * as THREE from 'three';
 import { createScene } from './scene.js';
@@ -60,9 +60,9 @@ async function boot() {
     try { bodyList = solarCore.sunMoonPlanets(clock.getUTC(), observer.lat, observer.lon) || []; }
     catch (e) { console.warn('[compositor] sunMoonPlanets failed:', e.message); bodyList = []; }
   }
-  const getSunAltDeg = () => {
+  const getSun = () => {
     const sun = bodyList.find((b) => b.name.toLowerCase() === 'sun');
-    return sun ? sun.alt : -90; // no solar-core -> treat as deep night
+    return sun ? { alt: sun.alt, az: sun.az } : { alt: -90, az: 180 }; // no solar-core -> deep night
   };
 
   // Sky layers (each optional while poles land in parallel).
@@ -70,7 +70,7 @@ async function boot() {
   const constellations = await tryLayer('constellations', async () => (await import('./constellations.js')).makeConstellations(scene, getObs));
   const solar = await tryLayer('solar', async () => (await import('./solarRender.js')).makeSolar(scene, getObs));
   const ground = await tryLayer('ground', async () => (await import('./ground.js')).makeGround(scene));
-  const atmosphere = await tryLayer('atmosphere', async () => (await import('./atmosphere.js')).makeAtmosphere(scene, getSunAltDeg));
+  const atmosphere = await tryLayer('atmosphere', async () => (await import('./atmosphere.js')).makeAtmosphere(scene, getSun));
 
   // Controls + observer/time UI (existing poles).
   bindControls(camera, renderer.domElement, { az: 0, alt: 20 });
@@ -91,7 +91,10 @@ async function boot() {
     else if (key === 'constellations') setLayerVisible(constellations, on);
     else if (key === 'planets') setLayerVisible(solar, on);
     else if (key === 'ground') setLayerVisible(ground, on);
-    else if (key === 'atmosphere' && !on) scene.background = new THREE.Color(NIGHT_BG);
+    else if (key === 'atmosphere') {
+      if (atmosphere) atmosphere.mesh.visible = on;
+      if (!on) scene.background = new THREE.Color(NIGHT_BG);
+    }
     syncLabelState();
     dirty = true; // re-run updates (e.g. atmosphere back on) on the next frame
   }
@@ -118,7 +121,10 @@ async function boot() {
       stars?.update?.();
       constellations?.update?.();
       solar?.update?.();
-      if (atmosphere && state.atmosphere) atmosphere.update?.();
+      if (atmosphere && state.atmosphere) {
+        atmosphere.update?.();
+        if (stars) stars.material.uniforms.uVisibility.value = atmosphere.starVisibility();
+      }
       labels.recompute();
       dirty = false;
     }

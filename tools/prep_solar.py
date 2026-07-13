@@ -26,9 +26,6 @@ for sname, lat, lon in sites:
                 "body": body, "site": sname, "lat": lat, "lon": lon, "utc": iso + "Z",
                 "alt_expected": round(float(c.alt.deg), 4),
                 "az_expected": round(float(c.az.deg), 4),
-                # also the geocentric apparent RA/Dec (ICRS) so the JS ephemeris can be checked upstream of alt/az
-                "ra_expected": round(float((get_sun(t) if body == "sun" else get_body(body, t, loc)).icrs.ra.deg), 5),
-                "dec_expected": round(float((get_sun(t) if body == "sun" else get_body(body, t, loc)).icrs.dec.deg), 5),
             })
 (TESTS / "refs-solar.json").write_text(json.dumps(refs, indent=1))
 print(f"solar refs: {len(refs)} cases (Sun/Moon/5 planets x {len(sites)} sites x {len(epochs)} epochs) -> {TESTS/'refs-solar.json'}")

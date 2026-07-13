@@ -36,7 +36,7 @@ function precessToJ2000(raDeg, decDeg, jd) {
   const A = cosd(decDeg) * sind(raDeg + zeta);
   const B = cosd(theta) * cosd(decDeg) * cosd(raDeg + zeta) - sind(theta) * sind(decDeg);
   const C = sind(theta) * cosd(decDeg) * cosd(raDeg + zeta) + cosd(theta) * sind(decDeg);
-  return { ra: norm360(Math.atan2(A, B) * RAD + z), dec: Math.asin(C) * RAD };
+  return { ra: norm360(Math.atan2(A, B) * RAD + z), dec: Math.asin(Math.max(-1, Math.min(1, C))) * RAD };
 }
 
 // geocentric ecliptic-of-date rectangular coords -> equatorial-of-date RA/Dec + distance.

@@ -65,6 +65,7 @@ const vertexShader = `
 // Soft glow: sharp bright core + wide dim halo, scaled by per-star brightness.
 // Additive blending on the dark sky makes overlapping glows stack the way real stars do.
 const fragmentShader = `
+  uniform float uVisibility;
   varying vec3 vColor;
   varying float vBright;
   void main() {
@@ -72,7 +73,7 @@ const fragmentShader = `
     if (d > 1.0) discard;
     float core = smoothstep(0.35, 0.0, d);
     float halo = smoothstep(1.0, 0.0, d) * 0.45;
-    float a = (core + halo) * vBright;
+    float a = (core + halo) * vBright * uVisibility;
     vec3 col = vColor * (0.65 + 0.35 * core); // core whitens toward the centre
     gl_FragColor = vec4(col, a);
   }`;
@@ -118,6 +119,7 @@ export async function makeStars(scene, getObserverDate) {
   const material = new THREE.ShaderMaterial({
     vertexShader,
     fragmentShader,
+    uniforms: { uVisibility: { value: 1 } },
     vertexColors: true,
     transparent: true,
     depthWrite: false,

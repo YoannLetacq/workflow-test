@@ -21,8 +21,13 @@ increasing **Eastward** (0° = N, 90° = E, 180° = S, 270° = W).
 
 The astronomy core (`src/astro.js`) is verified against [astropy](https://www.astropy.org/):
 `equatorialToHorizontal` reproduces the alt/az truth in `tests/refs.json` to
-within **0.1°**. Tests also check the Polaris-altitude ≈ observer-latitude sanity
-case and that the star catalog loads.
+within **<0.01°** measured (worst-case ≈0.0085°, gated at 0.02°). Tests also
+check the Polaris-altitude ≈ observer-latitude sanity case and that the star
+catalog loads.
+
+The solar-system core (`src/solar.js`) is verified against astropy's Sun/Moon/
+planet ephemeris in `tests/refs-solar.json`: alt/az reproduce truth to within
+**≈0.036°** worst-case (gated at 0.05°).
 
 ## Run it
 
