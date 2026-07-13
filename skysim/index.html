@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>skysim — night sky</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #05070f; overflow: hidden; }
+      #app { position: fixed; inset: 0; }
+      canvas { display: block; }
+
+      /* observer/time panel (ui.js) and layer-toggle panel (overlay.js) */
+      .skysim-ui, .skysim-toggles {
+        position: fixed; z-index: 10;
+        color: #cfe3ff; font: 12px system-ui, sans-serif;
+        background: rgba(6, 10, 20, 0.6);
+        -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+        border: 1px solid rgba(120, 160, 220, 0.2);
+        border-radius: 8px; padding: 8px 10px;
+        display: flex; flex-direction: column; gap: 4px;
+      }
+      .skysim-ui { top: 10px; left: 10px; }
+      .skysim-toggles { top: 10px; right: 10px; }
+      .skysim-ui input, .skysim-ui select {
+        background: #0b1428; color: #cfe3ff;
+        border: 1px solid rgba(120, 160, 220, 0.3); border-radius: 4px; padding: 1px 3px;
+      }
+      .skysim-toggles label { cursor: pointer; user-select: none; }
+      .skysim-hud { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; opacity: 0.85; }
+
+      /* 2D name overlay (overlay.js) */
+      .skysim-labels { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+      .skysim-labels .lbl {
+        position: absolute; white-space: nowrap;
+        transform: translate(-50%, -140%);
+        font: 11px system-ui, sans-serif;
+        text-shadow: 0 0 4px #000, 0 0 2px #000;
+      }
+      .skysim-labels .star { color: #dfe9ff; }
+      .skysim-labels .planet { color: #ffd9a0; font-weight: 600; }
+      .skysim-labels .constellation { color: #8fb0ff; opacity: 0.8; font-style: italic; }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
