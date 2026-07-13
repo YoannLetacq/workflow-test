@@ -1,24 +1,25 @@
 # mdsite
 
-A small static site generator. It converts a folder of Markdown files into an
-HTML site using a theme template.
+A tiny static-site generator. It converts a folder of Markdown files into a
+themed HTML site.
 
-## What it does
+## How it works
 
-- Reads Markdown from `content/*.md`
-- Renders each file through the theme template
-- Writes `site/*.html`, one per source file, plus a `site/index.html` linking them
+- Content lives in `content/` as `*.md` files.
+- Each `content/<name>.md` becomes `site/<name>.html`, plus a `site/index.html`
+  listing the pages.
+- Pages are rendered through `mdsite/template.html`, which uses the
+  `{{title}}` and `{{content}}` placeholders, styled by `mdsite/theme.css`.
 
 ## Add a page
 
-Drop a `.md` file into `content/`:
+Drop a Markdown file in `content/`:
 
 ```
-content/about.md  ->  site/about.html
+content/about.md
 ```
 
-The file name (without `.md`) becomes the output page name and its link on the
-index.
+The first `# Heading` is used as the page title.
 
 ## Build
 
@@ -26,9 +27,4 @@ index.
 python3 mdsite/build.py
 ```
 
-## Output
-
-Generated HTML lands in `site/`:
-
-- `site/index.html` — index of all pages
-- `site/<name>.html` — one page per `content/<name>.md`
+The generated site is written to `site/`. Open `site/index.html` in a browser.

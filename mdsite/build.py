@@ -1,101 +1,119 @@
 #!/usr/bin/env python3
-"""mdsite build engine: convert a Markdown subset to HTML in pure Python.
+"""mdsite build engine — pure-Python Markdown SUBSET -> HTML static site.
 
-Subset: # / ## / ### headings, **bold**, [text](url) links, ``` fenced code
-blocks, and paragraphs. Renders each content/*.md into site/<name>.html via
-the theme template (placeholders {{title}} and {{content}}) plus a site index.
+Subset supported: #/##/### headings, **bold**, [text](url) links,
+``` fenced code ```, and paragraphs. No external dependencies.
+
+Placeholders in mdsite/template.html (from theme pole): {{title}} {{content}}
 """
 import html
+import os
 import re
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-CONTENT_DIR = ROOT / "content"
-SITE_DIR = ROOT / "site"
-TEMPLATE = ROOT / "mdsite" / "template.html"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CONTENT_DIR = os.path.join(ROOT, "content")
+TEMPLATE_PATH = os.path.join(ROOT, "mdsite", "template.html")
+SITE_DIR = os.path.join(ROOT, "site")
 
 _BOLD = re.compile(r"\*\*(.+?)\*\*")
-_LINK = re.compile(r"\[(.+?)\]\((.+?)\)")
+_LINK = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+_HEADING = re.compile(r"(#{1,3})\s+(.*)")
+_H1 = re.compile(r"#\s+(.*)")
 
 
-def render_inline(text):
-    """Escape HTML then apply inline markup (bold, links)."""
-    text = html.escape(text)
+def _inline(text):
+    """Apply inline rules (bold, links) to already-block-split text."""
     text = _BOLD.sub(r"<strong>\1</strong>", text)
-    # links: escape() turned the raw text into safe HTML already
     text = _LINK.sub(r'<a href="\2">\1</a>', text)
     return text
 
 
-def convert(md):
-    """Convert Markdown-subset source to an HTML fragment."""
-    lines = md.splitlines()
+def md_to_html(md):
+    """Convert a Markdown subset string to an HTML fragment."""
+    lines = md.split("\n")
     out = []
-    i = 0
-    while i < len(lines):
+    para = []
+
+    def flush():
+        if para:
+            joined = " ".join(para).strip()
+            if joined:
+                out.append("<p>" + _inline(joined) + "</p>")
+            para.clear()
+
+    i, n = 0, len(lines)
+    while i < n:
         line = lines[i]
         if line.startswith("```"):
-            code = []
+            flush()
             i += 1
-            while i < len(lines) and not lines[i].startswith("```"):
+            code = []
+            while i < n and not lines[i].startswith("```"):
                 code.append(lines[i])
                 i += 1
             i += 1  # skip closing fence
             out.append("<pre><code>" + html.escape("\n".join(code)) + "</code></pre>")
             continue
-        if line.startswith("### "):
-            out.append("<h3>" + render_inline(line[4:]) + "</h3>")
-        elif line.startswith("## "):
-            out.append("<h2>" + render_inline(line[3:]) + "</h2>")
-        elif line.startswith("# "):
-            out.append("<h1>" + render_inline(line[2:]) + "</h1>")
-        elif line.strip() == "":
-            pass  # blank line separates blocks
-        else:
-            # gather consecutive non-blank, non-structural lines into a paragraph
-            para = [line]
-            while (i + 1 < len(lines) and lines[i + 1].strip()
-                   and not lines[i + 1].startswith(("#", "```"))):
-                i += 1
-                para.append(lines[i])
-            out.append("<p>" + render_inline(" ".join(para)) + "</p>")
+        m = _HEADING.match(line)
+        if m:
+            flush()
+            level = len(m.group(1))
+            out.append("<h%d>%s</h%d>" % (level, _inline(m.group(2).strip()), level))
+            i += 1
+            continue
+        if line.strip() == "":
+            flush()
+            i += 1
+            continue
+        para.append(line.strip())
         i += 1
+    flush()
     return "\n".join(out)
 
 
-def title_of(md, fallback):
-    """First `# ` heading, else the file stem."""
-    for line in md.splitlines():
-        if line.startswith("# "):
-            return line[2:].strip()
-    return fallback
+def extract_title(md):
+    """First H1 becomes the page title; fall back to 'Untitled'."""
+    for line in md.split("\n"):
+        m = _H1.match(line)
+        if m:
+            return m.group(1).strip()
+    return "Untitled"
 
 
-def render_page(title, body, template):
-    return template.replace("{{title}}", html.escape(title)).replace("{{content}}", body)
+def render_page(template, title, content):
+    """Substitute title + content HTML into template placeholders."""
+    return template.replace("{{title}}", title).replace("{{content}}", content)
 
 
-def build():
-    template = TEMPLATE.read_text(encoding="utf-8")
-    SITE_DIR.mkdir(exist_ok=True)
+def build_site():
+    """Build every content/*.md into site/<name>.html plus site/index.html."""
+    os.makedirs(SITE_DIR, exist_ok=True)
+    with open(TEMPLATE_PATH, encoding="utf-8") as f:
+        template = f.read()
+
     pages = []
-    for src in sorted(CONTENT_DIR.glob("*.md")):
-        md = src.read_text(encoding="utf-8")
-        title = title_of(md, src.stem)
-        body = convert(md)
-        (SITE_DIR / f"{src.stem}.html").write_text(
-            render_page(title, body, template), encoding="utf-8")
-        pages.append((src.stem, title))
+    for fn in sorted(os.listdir(CONTENT_DIR)):
+        if not fn.endswith(".md"):
+            continue
+        name = fn[:-3]
+        with open(os.path.join(CONTENT_DIR, fn), encoding="utf-8") as f:
+            md = f.read()
+        title = extract_title(md)
+        content = md_to_html(md)
+        with open(os.path.join(SITE_DIR, name + ".html"), "w", encoding="utf-8") as f:
+            f.write(render_page(template, title, content))
+        pages.append((name, title))
 
     links = "\n".join(
-        f'<li><a href="{name}.html">{html.escape(title)}</a></li>'
-        for name, title in pages)
-    index_body = f"<ul>\n{links}\n</ul>"
-    (SITE_DIR / "index.html").write_text(
-        render_page("Index", index_body, template), encoding="utf-8")
+        '<li><a href="%s.html">%s</a></li>' % (name, html.escape(title))
+        for name, title in pages
+    )
+    index = render_page(template, "Index", "<ul>\n%s\n</ul>" % links)
+    with open(os.path.join(SITE_DIR, "index.html"), "w", encoding="utf-8") as f:
+        f.write(index)
     return pages
 
 
 if __name__ == "__main__":
-    built = build()
-    print(f"Built {len(built)} page(s) + index into {SITE_DIR}")
+    built = build_site()
+    print("built %d page(s): %s" % (len(built), ", ".join(n for n, _ in built)))
