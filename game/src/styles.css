@@ -25,6 +25,7 @@ body {
 }
 
 .game {
+  position: relative;
   width: 480px;
   max-width: 96vw;
   padding: 16px;

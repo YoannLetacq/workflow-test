@@ -8,16 +8,16 @@ export function mountUI(root) {
   root.innerHTML = `
     <div class="game">
       <header class="header">
-        <h1>2048</h1>
+        <h1 class="title">2048</h1>
         <div class="scores">
-          <div class="scorebox">Score <span class="score">0</span></div>
-          <div class="scorebox">Best <span class="best">0</span></div>
+          <div class="score-box"><span class="label">Score</span> <span class="score">0</span></div>
+          <div class="score-box"><span class="label">Best</span> <span class="best">0</span></div>
         </div>
       </header>
+      <button class="restart" type="button">New Game</button>
       <div class="board"></div>
       <div class="overlay hidden">
         <p class="overlay-msg"></p>
-        <button class="restart" type="button">New Game</button>
       </div>
     </div>`;
 
