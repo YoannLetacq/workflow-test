@@ -5,7 +5,9 @@ import * as THREE from 'three';
 import { equatorialToHorizontal } from './astro.js';
 import { dirFromAltAz } from './scene.js';
 
-const R = 475; // behind stars(490)/constellations(485), a faint deep-sky layer
+const R = 482; // > ground's 480 so the ground's depth test properly occludes it
+               // (see makeGround comment); still behind stars (490),
+               // constellations (485) and the Milky Way band (483).
 
 // Magnitude -> point size (px @ unit distance). Same shape as stars.js magToSize,
 // tuned for the Messier mag range (~1.6 (M45) .. ~10).
@@ -44,7 +46,7 @@ export async function makeMessier(scene, getObserverDate) {
   if (!res.ok) throw new Error(`messier.json load failed: ${res.status}`);
   const raw = await res.json();
   const n = raw.length;
-  const catalog = raw.map((o) => ({ ...o, alt: -90 }));
+  const catalog = raw;
 
   const positions = new Float32Array(n * 3);
   const sizes = new Float32Array(n);
@@ -74,7 +76,6 @@ export async function makeMessier(scene, getObserverDate) {
     for (let i = 0; i < n; i++) {
       const o = catalog[i];
       const { alt, az } = equatorialToHorizontal(o.ra_deg, o.dec_deg, lat, lon, date);
-      o.alt = alt;
       const v = dirFromAltAz(alt, az, R);
       posAttr.array[i * 3] = v.x;
       posAttr.array[i * 3 + 1] = v.y;

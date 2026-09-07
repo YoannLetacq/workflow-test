@@ -17,7 +17,7 @@
 //   atmosphere.js    makeAtmosphere(scene, getSun) -> { mesh, update, starVisibility }
 //   ground.js        makeGround(scene) -> { ... }
 //   messier.js       makeMessier(scene, getObs) -> { update, points, setVisible, ... }
-//   milkyway.js      makeMilkyway(scene, getObs) -> { update, points, setVisible, ... }
+//   milkyway.js      makeMilkyway(scene, getObs) -> { update, mesh, setVisible, ... }
 import * as THREE from 'three';
 import { createScene } from './scene.js';
 import { createClock } from './time.js';

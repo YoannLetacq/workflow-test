@@ -60,5 +60,9 @@ node --test skysim/tests/
 
 - `data/stars.json` — `[{ ra:deg, dec:deg (J2000 ICRS), mag, ci:B-V|null, name }]`
 - `tests/refs.json` — astropy alt/az reference truth
+- `data/messier.json`, `data/milkyway.json` — deep-sky catalog and Milky Way band
 
-Both are provided; do not regenerate them.
+Upstream project, version, licence and the exact regeneration command for each
+data file are recorded in [`data/SOURCES.md`](data/SOURCES.md); the generators
+live in `tools/`. `data/stars.json` and `tests/refs.json` are provided as-is —
+do not regenerate them.

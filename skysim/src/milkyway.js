@@ -1,8 +1,8 @@
 // milkyway-render: diffuse Milky Way band as a texture-mapped celestial sphere,
 // driven by astro-core alt/az. Data PROVIDED (never invented): data/milkyway.json
 // (GeoJSON FeatureCollection, 5 MultiPolygon layers ol1..ol5, [lon,lat] =
-// RA-folded(-180,180]/Dec — same convention as messier.json, see
-// .omc/prep-r2/REPORT.md §2).
+// RA-folded(-180,180]/Dec — same convention as messier.json; upstream, licence
+// and refetch command in data/SOURCES.md).
 //
 // Rendering approach: the 5 layers are rasterized once, at load, onto an
 // equirectangular (RA x Dec) canvas — full-winding polygons (the outer halo
@@ -15,20 +15,24 @@
 // derivation below — mathematically identical to the per-point stars.js/
 // constellations.js reproject pattern, just applied once as a rigid rotation).
 import * as THREE from 'three';
-import { equatorialToHorizontal } from './astro.js';
+import { equatorialToHorizontal, ROTATION_REF } from './astro.js';
 import { dirFromAltAz } from './scene.js';
+import { isValidRing, unwrapLon } from './milkywayGeo.js';
 
 const R = 483; // > ground's 480 so the ground's depth test properly occludes it (see makeGround comment); still behind stars (490) and constellations (485)
 
 // Outline layers run broadest/faintest (ol1) to narrowest/brightest (ol5) per
-// d3-celestial's naming convention (prep-r2/REPORT.md §2). Target: a SUBTLE haze
+// d3-celestial's naming convention (data/SOURCES.md). Target: a SUBTLE haze
 // behind the stars, not a foreground glow — peak combined alpha where all 5
 // layers nest (the galactic core) sums to ~0.12 (additive 'lighter' compositing
 // of same-hue fills is exactly alpha-additive below saturation, verified in the
 // report), outermost ol1 alone ~0.02 (barely perceptible).
 const LAYER_WEIGHT = { ol1: 0.02, ol2: 0.022, ol3: 0.024, ol4: 0.026, ol5: 0.028 };
-const BASE_COLOR = new THREE.Color(0xbfd4ff); // pale cool-white band
-const BASE_RGB = [Math.round(BASE_COLOR.r * 255), Math.round(BASE_COLOR.g * 255), Math.round(BASE_COLOR.b * 255)];
+// Written as literal sRGB bytes on purpose: these go straight into a CSS
+// rgba() string for the canvas fill, a path three's colour management never
+// sees. Round-tripping through THREE.Color would convert into the linear
+// working space (three >= r152) and yield [133,168,255] instead.
+const BASE_RGB = [191, 212, 255]; // #bfd4ff pale cool-white band
 
 const TEX_W = 2048, TEX_H = 1024; // equirectangular: x = RA [0,360), y = Dec [+90,-90]
 
@@ -39,27 +43,6 @@ function readObserver(getObserverDate) {
   const lat = observer.lat, lon = observer.lon;
   const date = s.date instanceof Date ? s.date : new Date(s.date ?? Date.now());
   return { lat, lon, date };
-}
-
-// A ring's raw lon sequence can jump across the (-180,180] fold seam mid-ring
-// (grazing crossings, or — for the two ol1 envelope rings — a full wind around
-// the whole RA circle). Unwrap so consecutive points never jump by more than
-// 180deg, matching constellations.js/messier.js's own reprojection convention.
-// Folding each point independently instead (i.e. `lon<0?lon+360:lon` per point,
-// with no memory of the previous point) was the bug behind the dark-patch
-// artifacts: two geometrically-adjacent points straddling the seam would fold to
-// x-values ~2000px apart, drawing a spurious edge that cut across the canvas and
-// evenodd-cancelled a chunk of that layer's own fill.
-function unwrapLon(ring) {
-  const out = [ring[0][0]];
-  for (let i = 1; i < ring.length; i++) {
-    let lon = ring[i][0];
-    const prev = out[i - 1];
-    while (lon - prev > 180) lon -= 360;
-    while (lon - prev < -180) lon += 360;
-    out.push(lon);
-  }
-  return out;
 }
 
 // Rasterize all 5 layers onto one equirectangular canvas: one Path2D per layer
@@ -84,11 +67,18 @@ function rasterize(data) {
   for (const feat of data.features) {
     const geom = feat.geometry;
     if (!geom || geom.type !== 'MultiPolygon') continue;
-    const alpha = LAYER_WEIGHT[feat.id] ?? 0.03;
+    // hasOwn, not [] + ??: a feature id of "toString" would otherwise resolve
+    // through the prototype chain to a function, which is not nullish.
+    const w = Object.hasOwn(LAYER_WEIGHT, feat.id) ? LAYER_WEIGHT[feat.id] : 0.03;
+    const alpha = Number.isFinite(w) ? w : 0.03;
     ctx.fillStyle = `rgba(${BASE_RGB[0]},${BASE_RGB[1]},${BASE_RGB[2]},${alpha})`;
     const path = new Path2D();
     for (const poly of geom.coordinates) {
       for (const ring of poly) {
+        if (!isValidRing(ring)) {
+          console.warn(`[milkyway] skipping out-of-range ring in layer ${feat.id}`);
+          continue;
+        }
         const lons = unwrapLon(ring);
         for (const shift of [-TEX_W, 0, TEX_W]) {
           lons.forEach((lon, i) => {
@@ -103,31 +93,26 @@ function rasterize(data) {
     }
     ctx.fill(path, 'evenodd');
   }
-  return { canvas, ctx };
+  return canvas;
 }
 
-// Three reference equatorial directions (ra,dec) whose local-frame position on
-// a vanilla THREE.SphereGeometry(radius, widthSegments, heightSegments) is
-// exactly the standard basis (1,0,0)/(0,1,0)/(0,0,1) — derived from three's own
-// vertex formula (phi=ra, theta=90-dec): x=-cos(ra)cos(dec), y=sin(dec),
-// z=sin(ra)cos(dec). Mapping each through equatorialToHorizontal+dirFromAltAz
-// gives that same basis's image in the alt-az world frame; the 3x3 matrix with
-// those images as columns IS the mesh's per-frame rotation — mathematically the
-// same transform stars.js/constellations.js apply per vertex, applied once as a
-// rigid rotation instead of tens of thousands of times. Verified numerically
-// against the point-based path in milkyway.selfcheck.mjs.
-const ROTATION_REF = [
-  { ra: 180, dec: 0 }, // -> local X
-  { ra: 0, dec: 90 },  // -> local Y
-  { ra: 90, dec: 0 },  // -> local Z
-];
+// ROTATION_REF (the 3 reference equatorial directions whose local-frame
+// positions on a vanilla THREE.SphereGeometry are exactly the standard basis)
+// lives in astro.js — see the derivation there. Mapping each through
+// equatorialToHorizontal+dirFromAltAz gives that basis's image in the alt-az
+// world frame; the 3x3 matrix with those images as columns IS the mesh's
+// per-frame rotation — mathematically the same transform
+// stars.js/constellations.js apply per vertex, applied once as a rigid rotation
+// instead of tens of thousands of times. milkyway.selfcheck.mjs imports the
+// same shipped constant and checks it against an independent re-derivation of
+// the point-based path.
 
 export async function makeMilkyway(scene, getObserverDate) {
   const res = await fetch(new URL('../data/milkyway.json', import.meta.url));
   if (!res.ok) throw new Error(`milkyway.json load failed: ${res.status}`);
   const data = await res.json();
 
-  const { canvas } = rasterize(data);
+  const canvas = rasterize(data);
   const texture = new THREE.CanvasTexture(canvas);
 
   const geometry = new THREE.SphereGeometry(R, 64, 32);
@@ -153,8 +138,7 @@ export async function makeMilkyway(scene, getObserverDate) {
 
   update(); // initial orientation
   return {
-    mesh,
-    points: mesh, // alias for main.js's `.points`/`.mesh` duck-typing (§0 contract)
+    mesh, // main.js's setLayerVisible duck-typing finds setVisible() first
     geometry,
     material,
     texture,

@@ -1,12 +1,13 @@
 // self-check: milkyway.json structure + RA-folded convention sanity
-// (prep-r2/REPORT.md §2), PLUS a numeric proof that milkyway.js's per-frame
+// (see ../data/SOURCES.md), PLUS a numeric proof that milkyway.js's per-frame
 // sphere-rotation approach exactly reproduces the point-based
 // equatorialToHorizontal+dirFromAltAz reprojection every other layer uses (the
 // "point path kept as numeric reference" even though milkyway.js itself no
 // longer renders individual points). Pure Node — no three/DOM.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { equatorialToHorizontal } from './astro.js';
+import { equatorialToHorizontal, ROTATION_REF } from './astro.js';
+import { isValidRing, unwrapLon } from './milkywayGeo.js';
 
 const data = JSON.parse(readFileSync(fileURLToPath(new URL('../data/milkyway.json', import.meta.url))));
 
@@ -62,15 +63,22 @@ if (nearestDist > GC_TOL_DEG) {
 console.log(`milkyway selfcheck: ${EXPECTED_LAYERS} layers / ${totalVerts} verts / GC nearest ${nearestDist.toFixed(2)}deg (tol ${GC_TOL_DEG})`);
 
 // ---- rotation-matrix numeric proof ------------------------------------------
-// milkyway.js builds its per-frame mesh rotation from 3 reference directions
-// (ra,dec) = (180,0)/(0,90)/(90,0), whose position on a vanilla
-// THREE.SphereGeometry is exactly the standard basis (1,0,0)/(0,1,0)/(0,0,1)
-// (from three's own vertex formula: x=-cos(ra)cos(dec), y=sin(dec),
-// z=sin(ra)cos(dec) with phi=ra, theta=90-dec). Applying that 3x3 basis matrix
-// to ANY other (ra,dec)'s local-frame position must exactly reproduce
-// equatorialToHorizontal+dirFromAltAz for that point — this is the numeric
-// proof that the whole-sphere rotation is not an approximation of the
-// per-point path other layers use, it is the same transform.
+// milkyway.js builds its per-frame mesh rotation from ROTATION_REF, the 3
+// reference directions whose position on a vanilla THREE.SphereGeometry is
+// meant to be exactly the standard basis (1,0,0)/(0,1,0)/(0,0,1). This block
+// imports that SHIPPED constant (from astro.js, which milkyway.js also imports
+// it from — milkyway.js itself cannot be loaded here, it needs the browser's
+// `three` import map) and checks it against a re-derivation kept deliberately
+// local below: three's own vertex formula x=-cos(ra)cos(dec), y=sin(dec),
+// z=sin(ra)cos(dec) (phi=ra, theta=90-dec), and the per-point
+// equatorialToHorizontal+dirFromAltAz path every other layer uses.
+//
+// Applying the basis built from ROTATION_REF to ANY other (ra,dec)'s
+// local-frame position must exactly reproduce the direct point path for that
+// point. That is simultaneously the numeric proof that the whole-sphere
+// rotation is the same transform and not an approximation, AND the check that
+// the shipped ROTATION_REF is the correct set of directions — a wrong entry
+// tilts the basis and the two paths diverge.
 function dirFromAltAz(altDeg, azDeg) {
   const alt = altDeg * Math.PI / 180, az = azDeg * Math.PI / 180;
   const ca = Math.cos(alt);
@@ -103,7 +111,7 @@ const ROTATION_TEST_POINTS = [
 let worstRotationDelta = 0;
 for (const c of ROTATION_CASES) {
   const date = new Date(c.utc);
-  const basis = [[180, 0], [0, 90], [90, 0]].map(([ra, dec]) => {
+  const basis = ROTATION_REF.map(({ ra, dec }) => {
     const { alt, az } = equatorialToHorizontal(ra, dec, c.lat, c.lon, date);
     return dirFromAltAz(alt, az);
   });
@@ -120,5 +128,69 @@ for (const c of ROTATION_CASES) {
   }
 }
 console.log(`milkyway rotation selfcheck: worst delta ${worstRotationDelta.toExponential(3)} (tol ${ROTATION_TOL})`);
+
+// ---- ring geometry: seam unwrap + parse-boundary range validation -----------
+// unwrapLon is a bounded loop ONLY for in-range input, so isValidRing is the
+// thing standing between the loader and a hung tab. Both halves are checked
+// against the shipped milkywayGeo.js, and the invalid rings are asserted
+// rejected BEFORE unwrapLon is ever called on them — a test that proved the
+// guard by hanging would be worse than no test.
+
+// A seam-crossing ring must come out with every consecutive delta <= 180.
+{
+  const seam = [[170, 10], [178, 11], [-179, 12], [-170, 13], [175, 12], [170, 10]];
+  if (!isValidRing(seam)) {
+    console.error('FAIL isValidRing rejected a legal seam-crossing ring');
+    fail++;
+  } else {
+    const lons = unwrapLon(seam);
+    if (lons.length !== seam.length) {
+      console.error(`FAIL unwrapLon length: ${lons.length} (expected ${seam.length})`);
+      fail++;
+    }
+    let worstJump = 0;
+    for (let i = 1; i < lons.length; i++) worstJump = Math.max(worstJump, Math.abs(lons[i] - lons[i - 1]));
+    if (worstJump > 180) {
+      console.error(`FAIL unwrapLon left a ${worstJump}deg jump (must be <= 180)`);
+      fail++;
+    }
+    // Every unwrapped lon must still name the same direction it started as.
+    for (let i = 0; i < lons.length; i++) {
+      const d = Math.abs(((lons[i] - seam[i][0]) % 360 + 360) % 360);
+      if (d > 1e-9 && Math.abs(d - 360) > 1e-9) {
+        console.error(`FAIL unwrapLon changed direction at ${i}: ${seam[i][0]} -> ${lons[i]}`);
+        fail++;
+      }
+    }
+    console.log(`milkyway unwrap selfcheck: worst consecutive delta ${worstJump}deg (tol 180)`);
+  }
+}
+
+// Anything unwrapLon cannot terminate on (or would poison coordinates with)
+// must be rejected at the boundary. 1e400 is what JSON.parse gives for the
+// literal in a data file; 1e12 is the finite-but-out-of-range case that a bare
+// Number.isFinite check would let through into ~2.8 billion iterations.
+{
+  const bad = [
+    ['empty ring', []],
+    ['Infinity lon (JSON 1e400)', [[JSON.parse('1e400'), 10], [20, 10], [20, 20]]],
+    ['-Infinity lon', [[JSON.parse('-1e400'), 10], [20, 10], [20, 20]]],
+    ['NaN lon', [[NaN, 10], [20, 10], [20, 20]]],
+    ['finite out-of-range lon 1e12', [[1e12, 10], [20, 10], [20, 20]]],
+    ['out-of-range lat', [[20, 91], [20, 10], [30, 10]]],
+    ['short point', [[20], [20, 10], [30, 10]]],
+    ['not a ring', [null]],
+  ];
+  let rejected = 0;
+  for (const [name, ring] of bad) {
+    if (isValidRing(ring)) {
+      console.error(`FAIL isValidRing accepted ${name} (unwrapLon would hang or poison coords)`);
+      fail++;
+    } else {
+      rejected++;
+    }
+  }
+  console.log(`milkyway ring-validation selfcheck: ${rejected}/${bad.length} invalid rings rejected`);
+}
 
 if (fail) process.exit(1);
