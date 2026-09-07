@@ -16,6 +16,8 @@
 //   constellations.js makeConstellations(scene, getObs) -> { update, setVisible, ... }
 //   atmosphere.js    makeAtmosphere(scene, getSun) -> { mesh, update, starVisibility }
 //   ground.js        makeGround(scene) -> { ... }
+//   messier.js       makeMessier(scene, getObs) -> { update, points, setVisible, ... }
+//   milkyway.js      makeMilkyway(scene, getObs) -> { update, points, setVisible, ... }
 import * as THREE from 'three';
 import { createScene } from './scene.js';
 import { createClock } from './time.js';
@@ -71,6 +73,8 @@ async function boot() {
   const solar = await tryLayer('solar', async () => (await import('./solarRender.js')).makeSolar(scene, getObs));
   const ground = await tryLayer('ground', async () => (await import('./ground.js')).makeGround(scene));
   const atmosphere = await tryLayer('atmosphere', async () => (await import('./atmosphere.js')).makeAtmosphere(scene, getSun));
+  const milkyway = await tryLayer('milkyway', async () => (await import('./milkyway.js')).makeMilkyway(scene, getObs));
+  const messier = await tryLayer('messier', async () => (await import('./messier.js')).makeMessier(scene, getObs));
 
   // Controls + observer/time UI (existing poles).
   bindControls(camera, renderer.domElement, { az: 0, alt: 20 });
@@ -81,7 +85,7 @@ async function boot() {
   const labels = await mountLabels(mount, camera, getObs, () => bodyList);
 
   // Layer-toggle panel.
-  const state = { stars: true, constellations: true, planets: true, labels: true, ground: true, atmosphere: true };
+  const state = { stars: true, constellations: true, planets: true, labels: true, ground: true, atmosphere: true, milkyway: true, messier: true };
   const syncLabelState = () => labels.setState({
     labels: state.labels, star: state.stars, planet: state.planets, constellation: state.constellations,
   });
@@ -91,6 +95,8 @@ async function boot() {
     else if (key === 'constellations') setLayerVisible(constellations, on);
     else if (key === 'planets') setLayerVisible(solar, on);
     else if (key === 'ground') setLayerVisible(ground, on);
+    else if (key === 'milkyway') setLayerVisible(milkyway, on);
+    else if (key === 'messier') setLayerVisible(messier, on);
     else if (key === 'atmosphere') {
       if (atmosphere) atmosphere.mesh.visible = on;
       if (!on) scene.background = new THREE.Color(NIGHT_BG);
@@ -105,6 +111,8 @@ async function boot() {
     { key: 'labels', label: 'Labels', on: true },
     { key: 'ground', label: 'Ground', on: true },
     { key: 'atmosphere', label: 'Atmosphere', on: true },
+    { key: 'milkyway', label: 'Milky Way', on: true },
+    { key: 'messier', label: 'Messier', on: true },
   ], onToggle);
   syncLabelState();
 
@@ -121,6 +129,8 @@ async function boot() {
       stars?.update?.();
       constellations?.update?.();
       solar?.update?.();
+      milkyway?.update?.();
+      messier?.update?.();
       if (atmosphere && state.atmosphere) {
         atmosphere.update?.();
         if (stars) stars.material.uniforms.uVisibility.value = atmosphere.starVisibility();
