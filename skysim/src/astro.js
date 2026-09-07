@@ -81,3 +81,21 @@ export function equatorialToHorizontal(raDeg, decDeg, latDeg, lonEastDeg, date) 
   const az = norm360(Math.atan2(xe, xn) * RAD); // from North, increasing East
   return { alt, az };
 }
+
+// Three reference equatorial directions (ra,dec) whose position on a vanilla
+// THREE.SphereGeometry(radius, widthSegments, heightSegments) is exactly the
+// standard basis (1,0,0)/(0,1,0)/(0,0,1) — derived from three's own vertex
+// formula (phi=ra, theta=90-dec): x=-cos(ra)cos(dec), y=sin(dec),
+// z=sin(ra)cos(dec). Mapping each through equatorialToHorizontal (then the
+// caller's alt/az->xyz) gives that basis's image in the alt-az world frame, so
+// the 3x3 matrix holding those images as columns IS the rigid rotation taking a
+// sphere mesh from the equatorial local frame to the horizontal frame.
+//
+// It lives in this three-free/DOM-free module so that milkyway.js and
+// milkyway.selfcheck.mjs load the SAME constant: the selfcheck re-derives the
+// point-based path independently and checks this shipped constant against it.
+export const ROTATION_REF = [
+  { ra: 180, dec: 0 }, // -> local X
+  { ra: 0, dec: 90 },  // -> local Y
+  { ra: 90, dec: 0 },  // -> local Z
+];

@@ -1,0 +1,882 @@
+[
+ {
+  "id": "M1",
+  "name": "Crab Nebula",
+  "type": "snr",
+  "mag": 8.4,
+  "ra_deg": 83.625,
+  "dec_deg": 22.0167
+ },
+ {
+  "id": "M2",
+  "name": "NGC 7089",
+  "type": "gc",
+  "mag": 6.5,
+  "ra_deg": 323.375,
+  "dec_deg": -0.8167
+ },
+ {
+  "id": "M3",
+  "name": "NGC 5272",
+  "type": "gc",
+  "mag": 6.4,
+  "ra_deg": 205.55,
+  "dec_deg": 28.3833
+ },
+ {
+  "id": "M4",
+  "name": "NGC 6121",
+  "type": "gc",
+  "mag": 5.9,
+  "ra_deg": 245.9,
+  "dec_deg": -26.5333
+ },
+ {
+  "id": "M5",
+  "name": "NGC 5904",
+  "type": "gc",
+  "mag": 5.8,
+  "ra_deg": 229.65,
+  "dec_deg": 2.0833
+ },
+ {
+  "id": "M6",
+  "name": "Butterfly Cluster",
+  "type": "oc",
+  "mag": 4.2,
+  "ra_deg": 265.0249,
+  "dec_deg": -32.2167
+ },
+ {
+  "id": "M7",
+  "name": "Ptolemy\u00b4s Cluster",
+  "type": "oc",
+  "mag": 3.3,
+  "ra_deg": 268.475,
+  "dec_deg": -34.8167
+ },
+ {
+  "id": "M8",
+  "name": "Lagoon Nebula",
+  "type": "sfr",
+  "mag": 5.8,
+  "ra_deg": 270.95,
+  "dec_deg": -24.3833
+ },
+ {
+  "id": "M9",
+  "name": "NGC 6333",
+  "type": "gc",
+  "mag": 7.9,
+  "ra_deg": 259.8,
+  "dec_deg": -18.5167
+ },
+ {
+  "id": "M10",
+  "name": "NGC 6254",
+  "type": "gc",
+  "mag": 6.6,
+  "ra_deg": 254.2751,
+  "dec_deg": -4.1
+ },
+ {
+  "id": "M11",
+  "name": "Wild Duck Cluster",
+  "type": "oc",
+  "mag": 5.8,
+  "ra_deg": 282.775,
+  "dec_deg": -6.2667
+ },
+ {
+  "id": "M12",
+  "name": "NGC 6218",
+  "type": "gc",
+  "mag": 6.6,
+  "ra_deg": 251.8001,
+  "dec_deg": -1.95
+ },
+ {
+  "id": "M13",
+  "name": "Great Hercules Cluster",
+  "type": "gc",
+  "mag": 5.9,
+  "ra_deg": 250.425,
+  "dec_deg": 36.4667
+ },
+ {
+  "id": "M14",
+  "name": "NGC 6402",
+  "type": "gc",
+  "mag": 7.6,
+  "ra_deg": 264.4001,
+  "dec_deg": -3.25
+ },
+ {
+  "id": "M15",
+  "name": "NGC 7078",
+  "type": "gc",
+  "mag": 6.4,
+  "ra_deg": 322.5,
+  "dec_deg": 12.1667
+ },
+ {
+  "id": "M16",
+  "name": "Eagle Nebula",
+  "type": "sfr",
+  "mag": 6,
+  "ra_deg": 274.7,
+  "dec_deg": -13.7833
+ },
+ {
+  "id": "M17",
+  "name": "Omega Nebula",
+  "type": "sfr",
+  "mag": 7,
+  "ra_deg": 275.2,
+  "dec_deg": -16.1833
+ },
+ {
+  "id": "M18",
+  "name": "NGC 6613",
+  "type": "oc",
+  "mag": 6.9,
+  "ra_deg": 274.9751,
+  "dec_deg": -17.1333
+ },
+ {
+  "id": "M19",
+  "name": "NGC 6273",
+  "type": "gc",
+  "mag": 7.2,
+  "ra_deg": 255.65,
+  "dec_deg": -26.2667
+ },
+ {
+  "id": "M20",
+  "name": "Trifid Nebula",
+  "type": "sfr",
+  "mag": 8.5,
+  "ra_deg": 270.6499,
+  "dec_deg": -23.0333
+ },
+ {
+  "id": "M21",
+  "name": "NGC 6531",
+  "type": "oc",
+  "mag": 5.9,
+  "ra_deg": 271.1501,
+  "dec_deg": -22.5
+ },
+ {
+  "id": "M22",
+  "name": "NGC 6656",
+  "type": "gc",
+  "mag": 5.1,
+  "ra_deg": 279.1001,
+  "dec_deg": -23.9
+ },
+ {
+  "id": "M23",
+  "name": "NGC 6494",
+  "type": "oc",
+  "mag": 5.5,
+  "ra_deg": 269.2001,
+  "dec_deg": -19.0167
+ },
+ {
+  "id": "M24",
+  "name": "Milky Way patch",
+  "type": "pos",
+  "mag": 4.5,
+  "ra_deg": 274.225,
+  "dec_deg": -18.4833
+ },
+ {
+  "id": "M25",
+  "name": "IC 4725",
+  "type": "oc",
+  "mag": 4.6,
+  "ra_deg": 277.9,
+  "dec_deg": -19.25
+ },
+ {
+  "id": "M26",
+  "name": "NGC 6694",
+  "type": "oc",
+  "mag": 8,
+  "ra_deg": 281.2999,
+  "dec_deg": -9.4
+ },
+ {
+  "id": "M27",
+  "name": "Dumbbell Nebula",
+  "type": "pn",
+  "mag": 8.1,
+  "ra_deg": 299.8999,
+  "dec_deg": 22.7167
+ },
+ {
+  "id": "M28",
+  "name": "NGC 6626",
+  "type": "gc",
+  "mag": 6.9,
+  "ra_deg": 276.125,
+  "dec_deg": -24.8667
+ },
+ {
+  "id": "M29",
+  "name": "NGC 6913",
+  "type": "oc",
+  "mag": 6.6,
+  "ra_deg": 305.975,
+  "dec_deg": 38.5333
+ },
+ {
+  "id": "M30",
+  "name": "NGC 7099",
+  "type": "gc",
+  "mag": 7.5,
+  "ra_deg": 325.0999,
+  "dec_deg": -23.1833
+ },
+ {
+  "id": "M31",
+  "name": "Andromeda",
+  "type": "s",
+  "mag": 3.4,
+  "ra_deg": 10.6751,
+  "dec_deg": 41.2667
+ },
+ {
+  "id": "M32",
+  "name": "NGC 221",
+  "type": "e",
+  "mag": 8.2,
+  "ra_deg": 10.6751,
+  "dec_deg": 40.8667
+ },
+ {
+  "id": "M33",
+  "name": "Triangulum",
+  "type": "s",
+  "mag": 5.7,
+  "ra_deg": 23.475,
+  "dec_deg": 30.65
+ },
+ {
+  "id": "M34",
+  "name": "NGC 1039",
+  "type": "oc",
+  "mag": 5.2,
+  "ra_deg": 40.5,
+  "dec_deg": 42.7833
+ },
+ {
+  "id": "M35",
+  "name": "NGC 2168",
+  "type": "oc",
+  "mag": 5.1,
+  "ra_deg": 92.2249,
+  "dec_deg": 24.3333
+ },
+ {
+  "id": "M36",
+  "name": "NGC 1960",
+  "type": "oc",
+  "mag": 6,
+  "ra_deg": 84.0251,
+  "dec_deg": 34.1333
+ },
+ {
+  "id": "M37",
+  "name": "NGC 2099",
+  "type": "oc",
+  "mag": 5.6,
+  "ra_deg": 88.1,
+  "dec_deg": 32.55
+ },
+ {
+  "id": "M38",
+  "name": "NGC 1912",
+  "type": "oc",
+  "mag": 6.4,
+  "ra_deg": 82.175,
+  "dec_deg": 35.8333
+ },
+ {
+  "id": "M39",
+  "name": "NGC 7092",
+  "type": "oc",
+  "mag": 4.6,
+  "ra_deg": 323.0501,
+  "dec_deg": 48.4333
+ },
+ {
+  "id": "M40",
+  "name": "WN 4",
+  "type": "pos",
+  "mag": 8,
+  "ra_deg": 185.5999,
+  "dec_deg": 58.0833
+ },
+ {
+  "id": "M41",
+  "name": "NGC 2287",
+  "type": "oc",
+  "mag": 4.5,
+  "ra_deg": 101.75,
+  "dec_deg": -20.7333
+ },
+ {
+  "id": "M42",
+  "name": "Orion Nebula",
+  "type": "sfr",
+  "mag": 4,
+  "ra_deg": 83.85,
+  "dec_deg": -5.45
+ },
+ {
+  "id": "M43",
+  "name": "NGC 1982",
+  "type": "sfr",
+  "mag": 9,
+  "ra_deg": 83.9,
+  "dec_deg": -5.2667
+ },
+ {
+  "id": "M44",
+  "name": "Praesepe",
+  "type": "oc",
+  "mag": 3.1,
+  "ra_deg": 130.025,
+  "dec_deg": 19.9833
+ },
+ {
+  "id": "M45",
+  "name": "Pleiades",
+  "type": "oc",
+  "mag": 1.2,
+  "ra_deg": 56.75,
+  "dec_deg": 24.1167
+ },
+ {
+  "id": "M46",
+  "name": "NGC 2437",
+  "type": "oc",
+  "mag": 6.1,
+  "ra_deg": 115.4501,
+  "dec_deg": -14.8167
+ },
+ {
+  "id": "M47",
+  "name": "NGC 2422",
+  "type": "oc",
+  "mag": 4.4,
+  "ra_deg": 114.15,
+  "dec_deg": -14.5
+ },
+ {
+  "id": "M48",
+  "name": "NGC 2548",
+  "type": "oc",
+  "mag": 5.8,
+  "ra_deg": 123.45,
+  "dec_deg": -5.8
+ },
+ {
+  "id": "M49",
+  "name": "NGC 4472",
+  "type": "e",
+  "mag": 8.4,
+  "ra_deg": 187.4501,
+  "dec_deg": 8
+ },
+ {
+  "id": "M50",
+  "name": "NGC 2323",
+  "type": "oc",
+  "mag": 5.9,
+  "ra_deg": 105.8,
+  "dec_deg": -8.3333
+ },
+ {
+  "id": "M51",
+  "name": "Whirlpool",
+  "type": "s",
+  "mag": 8.1,
+  "ra_deg": 202.4749,
+  "dec_deg": 47.2
+ },
+ {
+  "id": "M52",
+  "name": "NGC 7654",
+  "type": "oc",
+  "mag": 6.9,
+  "ra_deg": 351.05,
+  "dec_deg": 61.5833
+ },
+ {
+  "id": "M53",
+  "name": "NGC 5024",
+  "type": "gc",
+  "mag": 7.7,
+  "ra_deg": 198.225,
+  "dec_deg": 18.1667
+ },
+ {
+  "id": "M54",
+  "name": "NGC 6715",
+  "type": "gc",
+  "mag": 7.7,
+  "ra_deg": 283.7749,
+  "dec_deg": -30.4833
+ },
+ {
+  "id": "M55",
+  "name": "NGC 6809",
+  "type": "gc",
+  "mag": 7,
+  "ra_deg": 295.0,
+  "dec_deg": -30.9667
+ },
+ {
+  "id": "M56",
+  "name": "NGC 6779",
+  "type": "gc",
+  "mag": 8.2,
+  "ra_deg": 289.15,
+  "dec_deg": 30.1833
+ },
+ {
+  "id": "M57",
+  "name": "Ring Nebula",
+  "type": "pn",
+  "mag": 9,
+  "ra_deg": 283.3999,
+  "dec_deg": 33.0333
+ },
+ {
+  "id": "M58",
+  "name": "NGC 4579",
+  "type": "s",
+  "mag": 9.8,
+  "ra_deg": 189.425,
+  "dec_deg": 11.8167
+ },
+ {
+  "id": "M59",
+  "name": "NGC 4621",
+  "type": "e",
+  "mag": 9.8,
+  "ra_deg": 190.5,
+  "dec_deg": 11.65
+ },
+ {
+  "id": "M60",
+  "name": "NGC 4649",
+  "type": "e",
+  "mag": 8.8,
+  "ra_deg": 190.925,
+  "dec_deg": 11.55
+ },
+ {
+  "id": "M61",
+  "name": "NGC 4303",
+  "type": "s",
+  "mag": 9.7,
+  "ra_deg": 185.475,
+  "dec_deg": 4.4667
+ },
+ {
+  "id": "M62",
+  "name": "NGC 6266",
+  "type": "gc",
+  "mag": 6.6,
+  "ra_deg": 255.3,
+  "dec_deg": -30.1167
+ },
+ {
+  "id": "M63",
+  "name": "Sunflower Galaxy",
+  "type": "s",
+  "mag": 8.6,
+  "ra_deg": 198.95,
+  "dec_deg": 42.0333
+ },
+ {
+  "id": "M64",
+  "name": "Blackeye Galaxy",
+  "type": "s",
+  "mag": 8.5,
+  "ra_deg": 194.175,
+  "dec_deg": 21.6833
+ },
+ {
+  "id": "M65",
+  "name": "NGC 3623",
+  "type": "s",
+  "mag": 9.3,
+  "ra_deg": 169.725,
+  "dec_deg": 13.0833
+ },
+ {
+  "id": "M66",
+  "name": "NGC 3627",
+  "type": "s",
+  "mag": 9,
+  "ra_deg": 170.0501,
+  "dec_deg": 12.9833
+ },
+ {
+  "id": "M67",
+  "name": "NGC 2682",
+  "type": "oc",
+  "mag": 6.9,
+  "ra_deg": 132.6,
+  "dec_deg": 11.8167
+ },
+ {
+  "id": "M68",
+  "name": "NGC 4590",
+  "type": "gc",
+  "mag": 8.2,
+  "ra_deg": 189.8749,
+  "dec_deg": -26.75
+ },
+ {
+  "id": "M69",
+  "name": "NGC 6637",
+  "type": "gc",
+  "mag": 7.7,
+  "ra_deg": 277.85,
+  "dec_deg": -32.35
+ },
+ {
+  "id": "M70",
+  "name": "NGC 6681",
+  "type": "gc",
+  "mag": 8.1,
+  "ra_deg": 280.8,
+  "dec_deg": -32.3
+ },
+ {
+  "id": "M71",
+  "name": "NGC 6838",
+  "type": "gc",
+  "mag": 8.3,
+  "ra_deg": 298.4501,
+  "dec_deg": 18.7833
+ },
+ {
+  "id": "M72",
+  "name": "NGC 6981",
+  "type": "gc",
+  "mag": 9.4,
+  "ra_deg": 313.3751,
+  "dec_deg": -12.5333
+ },
+ {
+  "id": "M73",
+  "name": "4 Star asterism",
+  "type": "pos",
+  "mag": 10,
+  "ra_deg": 314.7251,
+  "dec_deg": -12.6333
+ },
+ {
+  "id": "M74",
+  "name": "NGC 628",
+  "type": "s",
+  "mag": 9.2,
+  "ra_deg": 24.1751,
+  "dec_deg": 15.7833
+ },
+ {
+  "id": "M75",
+  "name": "NGC 6864",
+  "type": "gc",
+  "mag": 8.6,
+  "ra_deg": 301.525,
+  "dec_deg": -21.9167
+ },
+ {
+  "id": "M76",
+  "name": "Little Dumbbell Nebula",
+  "type": "pn",
+  "mag": 11.5,
+  "ra_deg": 25.6001,
+  "dec_deg": 51.5667
+ },
+ {
+  "id": "M77",
+  "name": "Cetus A",
+  "type": "s",
+  "mag": 8.8,
+  "ra_deg": 40.6751,
+  "dec_deg": -0.0167
+ },
+ {
+  "id": "M78",
+  "name": "NGC 2068",
+  "type": "rn",
+  "mag": 8,
+  "ra_deg": 86.675,
+  "dec_deg": 0.05
+ },
+ {
+  "id": "M79",
+  "name": "NGC 1904",
+  "type": "gc",
+  "mag": 8,
+  "ra_deg": 81.125,
+  "dec_deg": -24.55
+ },
+ {
+  "id": "M80",
+  "name": "NGC 6093",
+  "type": "gc",
+  "mag": 7.2,
+  "ra_deg": 244.2499,
+  "dec_deg": -22.9833
+ },
+ {
+  "id": "M81",
+  "name": "Bode\u00b4s Galaxy",
+  "type": "s",
+  "mag": 6.8,
+  "ra_deg": 148.8996,
+  "dec_deg": 69.0667
+ },
+ {
+  "id": "M82",
+  "name": "Cigar Galaxy",
+  "type": "i",
+  "mag": 8.4,
+  "ra_deg": 148.9496,
+  "dec_deg": 69.6833
+ },
+ {
+  "id": "M83",
+  "name": "Southern Pinwheel",
+  "type": "s",
+  "mag": 7.6,
+  "ra_deg": 204.25,
+  "dec_deg": -29.8667
+ },
+ {
+  "id": "M84",
+  "name": "NGC 4374",
+  "type": "e",
+  "mag": 9.3,
+  "ra_deg": 186.275,
+  "dec_deg": 12.8833
+ },
+ {
+  "id": "M85",
+  "name": "NGC 4382",
+  "type": "e",
+  "mag": 9.2,
+  "ra_deg": 186.35,
+  "dec_deg": 18.1833
+ },
+ {
+  "id": "M86",
+  "name": "NGC 4406",
+  "type": "e",
+  "mag": 9.2,
+  "ra_deg": 186.5501,
+  "dec_deg": 12.95
+ },
+ {
+  "id": "M87",
+  "name": "Virgo A",
+  "type": "e",
+  "mag": 8.6,
+  "ra_deg": 187.7,
+  "dec_deg": 12.4
+ },
+ {
+  "id": "M88",
+  "name": "NGC 4501",
+  "type": "s",
+  "mag": 9.5,
+  "ra_deg": 187.9999,
+  "dec_deg": 14.4167
+ },
+ {
+  "id": "M89",
+  "name": "NGC 4552",
+  "type": "e",
+  "mag": 9.8,
+  "ra_deg": 188.925,
+  "dec_deg": 12.55
+ },
+ {
+  "id": "M90",
+  "name": "NGC 4569",
+  "type": "s",
+  "mag": 9.5,
+  "ra_deg": 189.2,
+  "dec_deg": 13.1667
+ },
+ {
+  "id": "M91",
+  "name": "NGC 4548",
+  "type": "s",
+  "mag": 10.2,
+  "ra_deg": 188.85,
+  "dec_deg": 14.5
+ },
+ {
+  "id": "M92",
+  "name": "NGC 6341",
+  "type": "gc",
+  "mag": 6.5,
+  "ra_deg": 259.275,
+  "dec_deg": 43.1333
+ },
+ {
+  "id": "M93",
+  "name": "NGC 2447",
+  "type": "oc",
+  "mag": 6.2,
+  "ra_deg": 116.15,
+  "dec_deg": -23.8667
+ },
+ {
+  "id": "M94",
+  "name": "Cat\u2019s Eye Galaxy",
+  "type": "s",
+  "mag": 8.1,
+  "ra_deg": 192.725,
+  "dec_deg": 41.1167
+ },
+ {
+  "id": "M95",
+  "name": "NGC 3351",
+  "type": "s",
+  "mag": 9.7,
+  "ra_deg": 161,
+  "dec_deg": 11.7
+ },
+ {
+  "id": "M96",
+  "name": "NGC 3368",
+  "type": "s",
+  "mag": 9.2,
+  "ra_deg": 161.7,
+  "dec_deg": 11.8167
+ },
+ {
+  "id": "M97",
+  "name": "Owl Nebula",
+  "type": "pn",
+  "mag": 11.2,
+  "ra_deg": 168.7001,
+  "dec_deg": 55.0167
+ },
+ {
+  "id": "M98",
+  "name": "NGC 4192",
+  "type": "s",
+  "mag": 10.1,
+  "ra_deg": 183.45,
+  "dec_deg": 14.9
+ },
+ {
+  "id": "M99",
+  "name": "NGC 4254",
+  "type": "s",
+  "mag": 9.8,
+  "ra_deg": 184.7,
+  "dec_deg": 14.4167
+ },
+ {
+  "id": "M100",
+  "name": "NGC 4321",
+  "type": "s",
+  "mag": 9.4,
+  "ra_deg": 185.7251,
+  "dec_deg": 15.8167
+ },
+ {
+  "id": "M101",
+  "name": "Pinwheel",
+  "type": "s",
+  "mag": 7.7,
+  "ra_deg": 210.8,
+  "dec_deg": 54.35
+ },
+ {
+  "id": "M102",
+  "name": "Spindle",
+  "type": "s",
+  "mag": 9.9,
+  "ra_deg": 226.6226,
+  "dec_deg": 55.76
+ },
+ {
+  "id": "M103",
+  "name": "NGC 581",
+  "type": "oc",
+  "mag": 7.4,
+  "ra_deg": 23.3,
+  "dec_deg": 60.7
+ },
+ {
+  "id": "M104",
+  "name": "Sombrero",
+  "type": "s",
+  "mag": 8.3,
+  "ra_deg": 190.0,
+  "dec_deg": -11.6167
+ },
+ {
+  "id": "M105",
+  "name": "NGC 3379",
+  "type": "e",
+  "mag": 9.3,
+  "ra_deg": 161.9501,
+  "dec_deg": 12.5833
+ },
+ {
+  "id": "M106",
+  "name": "NGC 4258",
+  "type": "s",
+  "mag": 8.3,
+  "ra_deg": 184.7501,
+  "dec_deg": 47.3
+ },
+ {
+  "id": "M107",
+  "name": "NGC 6171",
+  "type": "gc",
+  "mag": 8.1,
+  "ra_deg": 248.125,
+  "dec_deg": -13.05
+ },
+ {
+  "id": "M108",
+  "name": "NGC 3556",
+  "type": "s",
+  "mag": 10,
+  "ra_deg": 167.8751,
+  "dec_deg": 55.6667
+ },
+ {
+  "id": "M109",
+  "name": "NGC 3992",
+  "type": "s",
+  "mag": 9.8,
+  "ra_deg": 179.4,
+  "dec_deg": 53.3833
+ },
+ {
+  "id": "M110",
+  "name": "NGC 205",
+  "type": "e",
+  "mag": 8,
+  "ra_deg": 10.1,
+  "dec_deg": 41.6833
+ }
+]
